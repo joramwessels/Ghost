@@ -1,5 +1,6 @@
 Ghost
 =====
+**Ghost** is a mobile game application for Android that provides a local multiplayer version of the game of Ghost.
 
 GUI
 ---
@@ -15,8 +16,8 @@ where the actual game will be played.
 which closes its keyboard after a character has been added, enables player input in combination with the submit button below it.
 Turns are indicated by a small TextView stating the player's name, and the background color which changes along with the turns.
 *Game* also communicates with the back end to enable game progress.
-When the back end notifies the activity about a won game, *Game* changes to *Finish*, which merely states the winner in a TextView
-and enables the players to replay using a button, as well as showing some high score information.
+When the back end notifies the activity about a won game, *Game* changes to *Finish*, which merely states the winner in a TextView and enables the players to replay using a button. It also shows a ranked list of high scores and allows the
+user to scroll through them.
 
 A menu bar on top of the app helds a settings menu consisting of
   * language selection
@@ -38,3 +39,9 @@ if(!message.equals("OK")) {
 }
 ~~~
 The *move()* function checks the input on both syntaxical and game related rules, and changes the game state if everything is valid. If not, it returns a message stating the problem, and indicating whether a penalty was made or not.
+
+Impressions
+-----------
+![Welcome.class](welcome_activity.png "The welcome screen")
+![Game.class](game_activity.png "The actual game")
+![Finish.class](finish_activity.png "The high scores screen")
