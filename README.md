@@ -1,0 +1,26 @@
+Ghost
+=====
+
+GUI
+---
+The app will consist of only three activities.
+  * **Welcome**.class
+  * **Game**.class
+  * **Finish**.class
+*Welcome* asks for the player names with two text fields and a button, and handles the shared preferences concerning player names.
+Previous games are shown in a drop down options menu. The names are then passed on as a bundle to *Game*,
+where the actual game will be played.
+*Game* consists of the TextView that shows the current word status, a text field,
+which closes its keyboard after a character has been added, enables player input in combination with the submit button below it.
+Turns are indicated by a small TextView stating the player's name, and the background color which changes along with the turns.
+*Game* also communicates with the back end to enable game progress.
+When the back end notifies the activity about a won game, *Game* changes to *Finish*, which merely states the winner in a TextView
+and enables the players to replay using a button, as well as showing some high score information.
+
+A menu bar on top of the app helds a settings menu consisting of
+  * language selection
+  * restart
+Language differences are stored in strings xml files. The language selection is stored in the shared preferences and defaults
+to english. The restart option restarts the entire app, throwing away all temporary data and returning to the *Welcome* activity.
+
+Event listeners that ought to be changed are onStop() and onStart(). They save and load non finished games from the shared preferences.
