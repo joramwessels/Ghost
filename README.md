@@ -7,6 +7,7 @@ The app will consist of only three activities.
   * **Welcome**.class
   * **Game**.class
   * **Finish**.class
+
 *Welcome* asks for the player names with two text fields and a button, and handles the shared preferences concerning player names.
 Previous games are shown in a drop down options menu. The names are then passed on as a bundle to *Game*,
 where the actual game will be played.
@@ -24,3 +25,16 @@ Language differences are stored in strings xml files. The language selection is 
 to english. The restart option restarts the entire app, throwing away all temporary data and returning to the *Welcome* activity.
 
 Event listeners that ought to be changed are onStop() and onStart(). They save and load non finished games from the shared preferences.
+
+Back end
+--------
+The back end is based on one java class called **Ghost**.class. It keeps track of all game data and provides public methods
+for game progression. After initializing a *Ghost* object, providing player names, a move can be made by calling *move()*.
+~~~java
+Ghost ghost = Ghost();
+String message = ghost.move(String move);
+if(!message.equals("OK")) {
+    System.out.println(message);
+}
+~~~
+The *move()* function checks the input on both syntaxical and game related rules, and changes the game state if everything is valid. If not, it returns a message stating the problem, and indicating whether a penalty was made or not.
