@@ -32,8 +32,8 @@ Back end
 The back end is based on one java class called **Ghost**.class. It keeps track of all game data and provides public methods
 for game progression. After initializing a *Ghost* object, providing player names, a move can be made by calling *move()*.
 ~~~java
-Ghost ghost = Ghost();
-String message = ghost.move(String move);
+Ghost game = Ghost();
+String message = game.move(String move);
 if(!message.equals("OK")) {
     System.out.println(message);
 }

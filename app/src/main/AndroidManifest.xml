@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nl.prog.ghost.ghost" >
+    package="nl.prog.game.game" >
 
     <application
         android:allowBackup="true"
@@ -25,15 +25,15 @@
             android:label="@string/title_activity_finish" >
         </activity>
         <activity
-            android:name="nl.prog.ghost.gui.Welcome"
+            android:name="nl.prog.game.gui.Welcome"
             android:label="@string/title_activity_welcome" >
         </activity>
         <activity
-            android:name="nl.prog.ghost.gui.Game"
+            android:name="nl.prog.game.gui.GameGui"
             android:label="@string/title_activity_game" >
         </activity>
         <activity
-            android:name="nl.prog.ghost.gui.Finish"
+            android:name="nl.prog.game.gui.Finish"
             android:label="@string/title_activity_finish" >
         </activity>
     </application>
