@@ -1,11 +1,135 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".WelcomeGUI">
+    android:layout_height="match_parent"
+    tools:context=".WelcomeGUI"
+    android:background="#5a5a5a">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Title"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="40pt"
+            android:layout_weight="1"
+            android:text="G"
+            android:id="@+id/G"
+            android:textColor="#9f9f9f"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="40pt"
+            android:layout_weight="1"
+            android:text="H"
+            android:id="@+id/H"
+            android:textColor="#9f9f9f"
+            android:layout_below="@+id/message"
+            android:layout_alignParentLeft="true"
+            android:layout_row="0"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="40pt"
+            android:layout_weight="1"
+            android:text="O"
+            android:id="@+id/O"
+            android:textColor="#9f9f9f"
+            android:layout_below="@+id/textView4"
+            android:layout_alignParentLeft="true"
+            android:layout_row="0"
+            android:layout_column="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="40pt"
+            android:layout_weight="1"
+            android:text="S"
+            android:id="@+id/S"
+            android:textColor="#9f9f9f"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentLeft="true"
+            android:layout_row="0"
+            android:layout_column="3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="40pt"
+            android:layout_weight="1"
+            android:text="T"
+            android:id="@+id/T"
+            android:textColor="#9f9f9f"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="35dp"
+            android:layout_marginEnd="35dp"
+            android:layout_row="0"
+            android:layout_column="5" />
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/player1"
+        android:layout_marginTop="42dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:hint="Player 1" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Player 2"
+        android:ems="10"
+        android:id="@+id/player2"
+        android:layout_below="@+id/player1"
+        android:layout_alignLeft="@+id/player1"
+        android:layout_alignStart="@+id/player1" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Title">
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/oldNames"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:id="@+id/submit"
+        android:layout_below="@+id/player2"
+        android:layout_centerHorizontal="true"
+        android:background="#9f9f9f"
+        android:onClick="onSubmit"
+        android:nestedScrollingEnabled="false" />
 </RelativeLayout>

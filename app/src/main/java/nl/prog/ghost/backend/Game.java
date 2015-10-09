@@ -14,10 +14,14 @@ public class Game {
     private boolean turn;   // false when p1, true when p2
     private boolean ended;
     private boolean winner; // false when p1, true when p2
-    private Lexicon lex;
+    public Lexicon lex;
     private int livesP1 = 3;
     private int livesP2 = 3;
 
+    /**
+     * Main function to play in terminal.
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player1:");
@@ -38,8 +42,6 @@ public class Game {
             } while (!game.ended());
 
             // Changing rounds
-            if (game.turn) game.livesP2--;
-            else game.livesP1--;
             System.out.println( game.p1 +": "+ game.livesP1 +"\n"+
                     game.p2 +": "+ game.livesP2 +"\n Next Round!\n");
 
@@ -65,7 +67,7 @@ public class Game {
         this.word = "";
         this.turn = false;
         this.ended = false;
-        lex = new Lexicon("C:\\Users\\Joram Wessels\\AndroidStudioProjects\\Ghost\\app\\src\\main\\res\\lexicon\\"+language+".txt");
+        lex = new Lexicon("src/main/java/nl/prog/ghost/lexicon/" +language+".txt");
         lex.init();
     }
 
@@ -128,12 +130,16 @@ public class Game {
             String won = p2;
             if (turn) won = p1;
             ended = true;
+            if (turn) livesP2--;
+            else livesP1--;
             return newWord + " cannot form an existing word. " + won + " has won this round!";
         // losing condition 1
         } else if (newWord.length() > 3 && lex.exists(newWord)) {
             String won = p2;
             if (turn) won = p1;
             ended = true;
+            if (turn) livesP2--;
+            else livesP1--;
             return newWord + " is an existing word. " + won + " has won this round!";
         // continuing the game
         } else {
@@ -183,7 +189,7 @@ public class Game {
      * False when p1, True when p2.
      * @return turn
      */
-    public boolean Turn() {
+    public boolean turn() {
         return turn;
     }
 

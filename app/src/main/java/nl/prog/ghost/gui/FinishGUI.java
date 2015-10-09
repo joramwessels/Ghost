@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import prog.nl.ghost.R;
 
@@ -13,6 +14,15 @@ public class FinishGUI extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish_gui);
+
+
+        Bundle bundle = getIntent().getExtras();
+        boolean winner = bundle.getBoolean("winner");
+
+        TextView winView = (TextView) findViewById(R.id.winView);
+        String winName = bundle.getString("p1");
+        if (!winner) winName = bundle.getString("p2");
+        winView.setText(winName + " has won the game!");
     }
 
     @Override

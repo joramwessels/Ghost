@@ -4,9 +4,91 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="nl.prog.ghost.gui.GameGUI">
+    tools:context="nl.prog.ghost.gui.GameGUI"
+    android:background="#5a5a5a">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="WORD"
+        android:id="@+id/word"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="40pt"
+        android:textColor="#9f9f9f" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/letterAdd"
+        android:maxLines="1"
+        android:inputType="textShortMessage"
+        android:textSize="20pt"
+        android:layout_below="@+id/word"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter"
+        android:id="@+id/submit"
+        android:layout_below="@+id/letterAdd"
+        android:layout_centerHorizontal="true"
+        android:onClick="move" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:id="@+id/ratingP1"
+            android:numStars="3"
+            android:rating="3" />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratingP1"
+            android:isIndicator="true"
+            android:id="@+id/ratingP2"
+            android:numStars="3"
+            android:rating="3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="player 1"
+            android:id="@+id/nameP1"
+            android:layout_toRightOf="@+id/ratingP1"
+            android:textSize="17pt"
+            android:textColor="#101010" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="player 2"
+            android:id="@+id/nameP2"
+            android:layout_toRightOf="@+id/ratingP2"
+            android:layout_below="@+id/ratingP1"
+            android:textSize="17pt"
+            android:textColor="#101010" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/message"
+        android:layout_above="@+id/word"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible" />
 </RelativeLayout>
