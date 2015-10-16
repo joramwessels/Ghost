@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -18,9 +20,13 @@ import java.util.Set;
 
 import prog.nl.ghost.R;
 
+/**
+ * WelcomeGUI is the main activity. It asks for player names
+ * to start a game, and provides a list of familiar names.
+ * If two new names are entered, they are saved along with the other familiar names.
+ * @author Joram Wessels; 10631542
+ */
 public class WelcomeGUI extends Activity {
-
-    String lang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +41,57 @@ public class WelcomeGUI extends Activity {
         TextView S = (TextView) findViewById(R.id.S);
         TextView T = (TextView) findViewById(R.id.T);
 
+        // Collecting saved data
         SharedPreferences save = this.getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
-        lang = save.getString("lang", "dutch");
-        Set<String> oldPlayers = save.getStringSet("oldPlayers", new HashSet<String>());
-        System.out.println("get oldPlayers:");
-        for (String entry : oldPlayers) {
-            System.out.println(entry);
-        }
+        Set<String> oldPlayers = new HashSet<String>(save.getStringSet("oldPlayers", new HashSet<String>()));
+        String lang = save.getString("lang", "dutch");
+
         updatePlayerNames(oldPlayers);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_game_gui, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.dutch) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.putString("lang", "dutch");
+            save.commit();
+            Intent restart = new Intent(WelcomeGUI.this, WelcomeGUI.class);
+            startActivity(restart);
+
+        } else if (id == R.id.english) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.putString("lang", "english");
+            save.commit();
+            Intent restart = new Intent(WelcomeGUI.this, WelcomeGUI.class);
+            startActivity(restart);
+
+        } else if (id == R.id.restart) {
+            Intent restart = new Intent(WelcomeGUI.this, WelcomeGUI.class);
+            startActivity(restart);
+
+        } else if (id == R.id.clean) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.clear();
+            save.commit();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
-     * Navigates to the next activity after bundling the required data.
+     * Navigates to the GameGUI activity after bundling the required data.
      * @param p1
      * @param p2
      */
@@ -59,6 +104,10 @@ public class WelcomeGUI extends Activity {
         startActivity(nextAct);
     }
 
+    /**
+     * Updates the graphical display of the names of previous games.
+     * @param oldPlayers
+     */
     private void updatePlayerNames(Set<String> oldPlayers) {
         ListView list = (ListView) findViewById(R.id.oldNames);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, oldPlayers.toArray());
@@ -73,7 +122,8 @@ public class WelcomeGUI extends Activity {
                 String player1 = names[0];
                 String player2 = names[1];
                 toGame(player1, player2);
-            }});
+            }
+        });
     }
 
     /**
@@ -96,29 +146,12 @@ public class WelcomeGUI extends Activity {
             String p2 = p2input.getText().toString().replaceAll("- ", "-").replaceAll(" -","-");
 
             // Storing new names
-            if (true/*!oldPlayers.contains(p1 + " - " + p2)*/) {
-                SharedPreferences save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = save.edit();
-                Set<String> oldPlayers = save.getStringSet("oldPlayers", new HashSet<String>());
-                oldPlayers.add(p1 + " - " + p2);
-                //HashSet<String> players = new HashSet<String>();
-                //for (String entry : oldPlayers) {
-                editor.putStringSet("oldPlayers", oldPlayers);
-                editor.commit();
-
-                System.out.println("put oldPlayers:");
-                for (String entry : oldPlayers) {
-                    System.out.println(entry);
-                }
-
-
-                SharedPreferences prefs = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
-                Set<String> players = prefs.getStringSet("oldPlayers", new HashSet<String>());
-                System.out.println("check:");
-                for (String entry : players) {
-                    System.out.println(entry);
-                }
-            }
+            SharedPreferences save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
+            Set<String> oldPlayers = new HashSet<String>(save.getStringSet("oldPlayers", new HashSet<String>()));
+            oldPlayers.add(p1 + " - " + p2);
+            SharedPreferences.Editor editor = save.edit();
+            editor.putStringSet("oldPlayers", oldPlayers);
+            editor.commit();
 
             toGame(p1, p2);
         }

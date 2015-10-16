@@ -24,6 +24,14 @@ public class Game {
     private int livesP2 = 3;
     private BufferedReader br;
 
+    public Game(String player1, String player2, BufferedReader reader) {
+        this.p1 = player1;
+        this.p2 = player2;
+        this.br = reader;
+        lex = new Lexicon(br);
+    }
+
+/******************************* Main *******************************/
     /**
      * Main function to enable play in terminal.
      * @param args
@@ -72,13 +80,7 @@ public class Game {
         }
     }
 
-    public Game(String player1, String player2, BufferedReader reader) {
-        this.p1 = player1;
-        this.p2 = player2;
-        this.br = reader;
-        lex = new Lexicon(br);
-    }
-
+/***************************** Object **************************************/
     /**
      * Initializes Game.class for a new playthrough.
      * init() should only be called when a new round is required,
@@ -86,7 +88,6 @@ public class Game {
      */
     public void init() {
         this.word = "";
-        this.turn = false;
         this.ended = false;
         lex.init();
     }
@@ -154,11 +155,11 @@ public class Game {
 
         // losing condition 2
         if (hits == 0) {
-            String won = winner(turn);
+            String won = winner(!turn);
             return newWord + " cannot form an existing word. " + won + " has won this round!";
         // losing condition 1
         } else if (newWord.length() > 3 && lex.exists(newWord)) {
-            String won = winner(turn);
+            String won = winner(!turn);
             return newWord + " is an existing word. " + won + " has won this round!";
         // continuing the game
         } else {
@@ -174,11 +175,11 @@ public class Game {
      * @return winner
      */
     private String winner(boolean player) {
-        String won = p2;
-        if (player) won = p1;
+        String won = p1;
+        if (player) won = p2;
         ended = true;
-        if (player) livesP2--;
-        else livesP1--;
+        if (player) livesP1--;
+        else livesP2--;
         return won;
     }
 

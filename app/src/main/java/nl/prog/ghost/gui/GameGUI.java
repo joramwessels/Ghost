@@ -1,7 +1,9 @@
 package nl.prog.ghost.gui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,43 +20,37 @@ import java.io.InputStreamReader;
 import nl.prog.ghost.backend.Game;
 import prog.nl.ghost.R;
 
+/**
+ * GameGUI consults a Game instance and provides
+ * the interface between the user and the game.
+ * @author Joram Wessels; 10631542
+ */
 public class GameGUI extends Activity {
 
     private static final int RED = 0xFFB00000;
     private static final int BLACK = 0xFF101010;
     private static final int WHITE = 0xFFD6D6D6;
 
-    Game game;
-    String p1;
-    String p2;
-    TextView p1view;
-    TextView p2view;
-    int turnCount;
+    private Game game;
+    private String p1;
+    private String p2;
+    private TextView p1view;
+    private TextView p2view;
+    private int turnCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_gui);
 
-        // Creating Game instance
-        try {
-            InputStream iS = getApplicationContext().getAssets().open("dutch.txt");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(iS));
+        // accepting bundle
+        Bundle bundle = getIntent().getExtras();
+        p1 = bundle.getString("p1");
+        p2 = bundle.getString("p2");
 
-            Bundle bundle = getIntent().getExtras();
-            p1 = bundle.getString("p1");
-            p2 = bundle.getString("p2");
-            game = new Game(p1, p2, reader);
-            long start = System.currentTimeMillis();
-            game.init();
-            System.out.println("Game initialized in " + (System.currentTimeMillis() - start) + "ms");
+        createGame();
 
-
-        } catch (IOException i) {
-            i.printStackTrace();
-            System.exit(1);
-        }
-
+        // initializing graphical default
         p1view = (TextView) findViewById(R.id.nameP1);
         p2view = (TextView) findViewById(R.id.nameP2);
         p1view.setText(p1);
@@ -76,12 +72,50 @@ public class GameGUI extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id == R.id.restart) {
+
+        if (id == R.id.dutch) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.putString("lang", "dutch");
+            save.commit();
             Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
             startActivity(restart);
+
+        } else if (id == R.id.english) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.putString("lang", "english");
+            save.commit();
+            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
+            startActivity(restart);
+
+        } else if (id == R.id.restart) {
+            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
+            startActivity(restart);
+
+        } else if (id == R.id.clean) {
+            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+            save.clear();
+            save.commit();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Creates and initializes a new game instance
+     */
+    private void createGame() {
+        try {
+            InputStream IS = getApplicationContext().getAssets().open("dutch.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(IS));
+            game = new Game(p1, p2, reader);
+
+            long start = System.currentTimeMillis();
+            game.init();
+            System.out.println("Game initialized in " + (System.currentTimeMillis() - start) + "ms");
+        } catch (IOException i) {
+            i.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -97,15 +131,15 @@ public class GameGUI extends Activity {
         String message = game.guess(move);
         System.out.println(message);
         System.out.println("word: " + game.getWord());
+        System.out.println("turn: " + game.turn());
 
-        if (message.contains("was added to") || message.contains("won this round!")) {
-            displayMessage(message, false);
-            updateWord();
-            updateTurn();
-            turnCount += 2;
-        } else {
-            displayMessage(message, true);
-        }
+        boolean error = true;
+        if (message.contains("was added to") ||
+            message.contains("won this round!")) error = false;
+        displayMessage(message, error);
+        updateWord();
+        updateTurn();
+        turnCount += 2;
 
         if (game.ended()) {
             updateLives();
@@ -130,7 +164,7 @@ public class GameGUI extends Activity {
     }
 
     /**
-     * Changes the graphical interface to indicate whose turn it is.
+     * Changes the graphical display to indicate whose turn it is.
      */
     private void updateTurn() {
         if (game.turn()) {
@@ -154,7 +188,7 @@ public class GameGUI extends Activity {
     }
 
     /**
-     * Updates the graphical interface to show the new amount of lives,
+     * Updates the graphical display to show the new amount of lives,
      * and navigates to the finish activity when a player has lost.
      */
     private void updateLives() {
@@ -171,6 +205,9 @@ public class GameGUI extends Activity {
         }
     }
 
+    /**
+     * Navigates to the FinishGUI activity after bundling the required data.
+     */
     private void toFinish() {
         Intent toFinish = new Intent(GameGUI.this, FinishGUI.class);
         Bundle bundle = new Bundle();
