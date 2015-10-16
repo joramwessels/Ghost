@@ -10,22 +10,26 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import nl.prog.ghost.backend.Game;
 import prog.nl.ghost.R;
 
 public class GameGUI extends Activity {
 
-    int RED = 0xFFB00000;
-    int BLACK = 0xFF101010;
-    int WHITE = 0xFFD6D6D6;
+    private static final int RED = 0xFFB00000;
+    private static final int BLACK = 0xFF101010;
+    private static final int WHITE = 0xFFD6D6D6;
 
     Game game;
     String p1;
     String p2;
     TextView p1view;
     TextView p2view;
+    int turnCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,38 +37,48 @@ public class GameGUI extends Activity {
         setContentView(R.layout.activity_game_gui);
 
         // Creating Game instance
-        Bundle bundle = getIntent().getExtras();
-        p1 = bundle.getString("p1");
-        p2 = bundle.getString("p2");
-        game = new Game(p1, p2);
-        game.init();
-        if (game.lex != null) {
-            displayMessage("" + game.lex.count(), true);
+        try {
+            InputStream iS = getApplicationContext().getAssets().open("dutch.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(iS));
+
+            Bundle bundle = getIntent().getExtras();
+            p1 = bundle.getString("p1");
+            p2 = bundle.getString("p2");
+            game = new Game(p1, p2, reader);
+            long start = System.currentTimeMillis();
+            game.init();
+            System.out.println("Game initialized in " + (System.currentTimeMillis() - start) + "ms");
+
+
+        } catch (IOException i) {
+            i.printStackTrace();
+            System.exit(1);
         }
 
-        TextView p1view = (TextView) findViewById(R.id.nameP1);
-        TextView p2view = (TextView) findViewById(R.id.nameP2);
+        p1view = (TextView) findViewById(R.id.nameP1);
+        p2view = (TextView) findViewById(R.id.nameP2);
         p1view.setText(p1);
         p2view.setText(p2);
+        if (game.turn()) p2view.setTextColor(WHITE);
+        else p1view.setTextColor(WHITE);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_game_gui, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.restart) {
+            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
+            startActivity(restart);
         }
 
         return super.onOptionsItemSelected(item);
@@ -82,11 +96,13 @@ public class GameGUI extends Activity {
         displayMessage(move, false);
         String message = game.guess(move);
         System.out.println(message);
+        System.out.println("word: " + game.getWord());
 
-        if (message.contains("was added to")) {
+        if (message.contains("was added to") || message.contains("won this round!")) {
             displayMessage(message, false);
             updateWord();
-            switchTurn();
+            updateTurn();
+            turnCount += 2;
         } else {
             displayMessage(message, true);
         }
@@ -110,13 +126,13 @@ public class GameGUI extends Activity {
         } else {
             view.setTextColor(BLACK);
         }
-        //view.setVisibility(View.INVISIBLE);
+        view.setVisibility(View.VISIBLE);
     }
 
     /**
      * Changes the graphical interface to indicate whose turn it is.
      */
-    private void switchTurn() {
+    private void updateTurn() {
         if (game.turn()) {
             p1view.setTextColor(BLACK);
             p2view.setTextColor(WHITE);
@@ -127,11 +143,14 @@ public class GameGUI extends Activity {
     }
 
     /**
-     * Updates the graphical display of the current word status.
+     * Updates the graphical display of the current word status,
+     * and cleans the content of the letter adding EditText.
      */
     private void updateWord() {
         TextView view = (TextView) findViewById(R.id.word);
-        view.setText(game.getWord());
+        view.setText(game.getWord().toUpperCase());
+        EditText text = (EditText) findViewById(R.id.letterAdd);
+        text.setText("");
     }
 
     /**
@@ -143,16 +162,23 @@ public class GameGUI extends Activity {
         RatingBar barP2 = (RatingBar) findViewById(R.id.ratingP2);
         barP1.setRating(game.getLivesP1());
         barP2.setRating(game.getLivesP2());
-        if (game.getLivesP1() == 0 || game.getLivesP1() == 0) {
-            Intent toFinish = new Intent(GameGUI.this, FinishGUI.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("winner", game.winner());
-            bundle.putString("p1",p1);
-            bundle.putString("p2",p2);
-            toFinish.putExtras(bundle);
-            startActivity(toFinish);
+        if (game.getLivesP1() == 0 || game.getLivesP2() == 0) {
+            toFinish();
         } else {
+            long start = System.currentTimeMillis();
             game.init();
+            System.out.println("Game initialized in " + (System.currentTimeMillis() - start) + "ms");
         }
+    }
+
+    private void toFinish() {
+        Intent toFinish = new Intent(GameGUI.this, FinishGUI.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("winner", game.winner());
+        bundle.putString("p1",p1);
+        bundle.putString("p2",p2);
+        bundle.putInt("turns", turnCount/2+1);
+        toFinish.putExtras(bundle);
+        startActivity(toFinish);
     }
 }

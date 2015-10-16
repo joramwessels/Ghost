@@ -1,8 +1,14 @@
 package nl.prog.ghost.backend;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
+ * The Game class provides the backend game functionality
+ * for the game of Ghost. Provided with two player names and
+ * a BufferedReader that references a lexicon file
  * @author Joram Wessels; 10631542
  */
 public class Game {
@@ -10,26 +16,37 @@ public class Game {
     private String p1;
     private String p2;
     private String word;
-    private String language = "dutch";
     private boolean turn;   // false when p1, true when p2
     private boolean ended;
     private boolean winner; // false when p1, true when p2
-    public Lexicon lex;
+    private Lexicon lex;
     private int livesP1 = 3;
     private int livesP2 = 3;
+    private BufferedReader br;
 
     /**
-     * Main function to play in terminal.
+     * Main function to enable play in terminal.
      * @param args
      */
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Player1:");
-        String player1 = scanner.next();
-        System.out.println("Player2:");
-        String player2 = scanner.next();
-        Game game = new Game(player1, player2);
-        String message;
+     public static void main(String[] args) {
+         Scanner scanner = new Scanner(System.in);
+         BufferedReader reader;
+         System.out.println("Player1:");
+         String player1 = scanner.next();
+         System.out.println("Player2:");
+         String player2 = scanner.next();
+         System.out.println("Lexicon file:)");
+         do {
+             try {
+                 String lang = scanner.next();
+                 reader = new BufferedReader(new FileReader(lang));
+                 break;
+             } catch (IOException i) {
+                 System.out.println("File not found. Lexicon file:");
+             }
+         } while (true);
+         Game game = new Game(player1, player2, reader);
+         String message;
 
         do {
             game.init();
@@ -55,28 +72,38 @@ public class Game {
         }
     }
 
-    public Game(String player1, String player2) {
+    public Game(String player1, String player2, BufferedReader reader) {
         this.p1 = player1;
         this.p2 = player2;
+        this.br = reader;
+        lex = new Lexicon(br);
     }
 
     /**
-     * Initializes Game.class for a new playthrough
+     * Initializes Game.class for a new playthrough.
+     * init() should only be called when a new round is required,
+     * as it does not initialize a complete game.
      */
     public void init() {
         this.word = "";
         this.turn = false;
         this.ended = false;
-        lex = new Lexicon("src/main/java/nl/prog/ghost/lexicon/" +language+".txt");
         lex.init();
     }
 
     /**
      * Performs a move for the player who's turn it is.
-     * @param move
+     * It takes care of:
+     * 1) syntaxical validity,
+     * 2) conformity of the rules,
+     * 3) updating the word status,
+     * 4) changing turns
+     * 5) Ending rounds & updating lives
+     * @param moveRaw
      * @return status message
      */
-    public String guess(String move) {
+    public String guess(String moveRaw) {
+        String move = moveRaw.toLowerCase();
         String message = checkInput(move);
         if (!message.equals("OK")) {
             return message;
@@ -127,24 +154,32 @@ public class Game {
 
         // losing condition 2
         if (hits == 0) {
-            String won = p2;
-            if (turn) won = p1;
-            ended = true;
-            if (turn) livesP2--;
-            else livesP1--;
+            String won = winner(turn);
             return newWord + " cannot form an existing word. " + won + " has won this round!";
         // losing condition 1
         } else if (newWord.length() > 3 && lex.exists(newWord)) {
-            String won = p2;
-            if (turn) won = p1;
-            ended = true;
-            if (turn) livesP2--;
-            else livesP1--;
+            String won = winner(turn);
             return newWord + " is an existing word. " + won + " has won this round!";
         // continuing the game
         } else {
             return "OK";
         }
+    }
+
+    /**
+     * Processes a winning move, ending the game,
+     * setting a winner and sustracting lives accordingly.
+     * Returns the name of the winner.
+     * @param player
+     * @return winner
+     */
+    private String winner(boolean player) {
+        String won = p2;
+        if (player) won = p1;
+        ended = true;
+        if (player) livesP2--;
+        else livesP1--;
+        return won;
     }
 
 
@@ -210,13 +245,6 @@ public class Game {
     }
 
     /**
-     * @return
-     */
-    public String getLanguage() {
-        return this.language;
-    }
-
-    /**
      * @param p1
      */
     public void setP1(String p1) {
@@ -228,13 +256,5 @@ public class Game {
      */
     public void setP2(String p2) {
         this.p2 = p2;
-    }
-
-    /**
-     * Defaults to dutch
-     * @param lang
-     */
-    public void setLanguage(String lang) {
-        this.language = lang;
     }
 }

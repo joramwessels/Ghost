@@ -1,5 +1,8 @@
 package nl.prog.ghost.backend;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,37 +14,33 @@ import java.util.Iterator;
 
 /**
  * The lexicon model class enables the game class to validate moves
- * according to their presence in the provided lexicon txt file.
- * Created by Joram Wessels on 28-Sep-15.
+ * according to their presence in the provided reader of the lexicon txt file.
+ * @auathor Joram Wessels; 10631542
  */
 public class Lexicon {
 
-    private String path;
+    private BufferedReader br;
     private HashSet<String> set;
     private HashSet<String> filtered;
 
-    public Lexicon(String path) {
-        this.path = path;
-    }
-
-    /**
-     * Initializes a lexicon for a new game.
-     */
-    public void init() {
+    public Lexicon(BufferedReader reader) {
+        this.br = reader;
         set = new HashSet<String>(10000, 1);
         try {
-            //InputStream stream = ClassLoader.getSystemResourceAsStream(path);
-            //BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-            System.out.println("exists " + new File(path).exists());
-            BufferedReader br = new BufferedReader(new FileReader(path));
             String line;
             while ((line = br.readLine()) != null) {
                 set.add(line);
             }
-            System.out.println(set.size());
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+
+    /**
+     * Initializes a lexicon for a new round.
+     */
+    public void init() {
+        this.filtered = null;
     }
 
     /**
