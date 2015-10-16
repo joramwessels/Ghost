@@ -52,7 +52,7 @@ Discovered bugs
 
 Unfinished backlog
 ----------
-  * Different Languages
+  * Multi-language GUI
   * Game state save
   * Changing the length of WORD dynamically to always fit on screen
-  * Keyboard disappearing on any click
+  * Keyboard in GameGUI disappearing on entering first character

@@ -1,9 +1,23 @@
 <resources>
     <string name="app_name">Ghost</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- menu items -->
+    <string name="dutch">Dutch</string>
+    <string name="english">English</string>
+    <string name="restart">Restart</string>
+    <string name="clean">Remove saved data</string>
+
+    <!-- WelcomeGUI -->
+    <string name="title_activity_welcome_gui">WelcomeGUI</string>
+    <string name="player1">Player 1</string>
+    <string name="player2">Player 2</string>
+    <string name="play">Play</string>
+
+    <!-- GameGUI -->
     <string name="title_activity_game_gui">GameGUI</string>
+    <string name="enter">Enter</string>
+
+    <!-- FinishGUI -->
     <string name="title_activity_finish_gui">FinishGUI</string>
-    <string name="title_activity_loading_gui">LoadingGUI</string>
+
 </resources>

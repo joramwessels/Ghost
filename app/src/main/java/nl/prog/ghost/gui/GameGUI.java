@@ -48,7 +48,9 @@ public class GameGUI extends Activity {
         p1 = bundle.getString("p1");
         p2 = bundle.getString("p2");
 
-        createGame();
+        SharedPreferences save = this.getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
+        String lang = save.getString("lang", "dutch");
+        createGame(lang);
 
         // initializing graphical default
         p1view = (TextView) findViewById(R.id.nameP1);
@@ -62,6 +64,8 @@ public class GameGUI extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_game_gui, menu);
+        MenuItem item = (MenuItem) findViewById(R.id.clean);
+        item.setTitle("Remove saved data");
         return true;
     }
 
@@ -77,24 +81,25 @@ public class GameGUI extends Activity {
             SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
             save.putString("lang", "dutch");
             save.commit();
-            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
-            startActivity(restart);
+            restart();
 
         } else if (id == R.id.english) {
             SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
             save.putString("lang", "english");
             save.commit();
-            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
-            startActivity(restart);
+            restart();
 
         } else if (id == R.id.restart) {
-            Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
-            startActivity(restart);
+            restart();
 
         } else if (id == R.id.clean) {
-            SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
-            save.clear();
-            save.commit();
+            if (item.getTitle().toString().equals("Sure ?")) {
+                SharedPreferences.Editor save = getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE).edit();
+                save.clear();
+                save.commit();
+            } else if (item.getTitle().toString().equals("Remove saved data")) {
+                item.setTitle("Sure ?");
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -102,10 +107,11 @@ public class GameGUI extends Activity {
 
     /**
      * Creates and initializes a new game instance
+     * @param language
      */
-    private void createGame() {
+    private void createGame(String language) {
         try {
-            InputStream IS = getApplicationContext().getAssets().open("dutch.txt");
+            InputStream IS = getApplicationContext().getAssets().open(language+".txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(IS));
             game = new Game(p1, p2, reader);
 
@@ -116,6 +122,14 @@ public class GameGUI extends Activity {
             i.printStackTrace();
             System.exit(1);
         }
+    }
+
+    /**
+     * Navigates back to the welcome activity
+     */
+    private void restart() {
+        Intent restart = new Intent(GameGUI.this, WelcomeGUI.class);
+        startActivity(restart);
     }
 
     /**

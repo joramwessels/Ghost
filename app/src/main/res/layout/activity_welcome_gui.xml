@@ -1,9 +1,11 @@
 <!-- Joram Wessels; 10631542 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomeGUI"
+    tools:context="nl.prog.ghost.gui.WelcomeGUI"
     android:background="#5a5a5a">
 
     <LinearLayout
@@ -99,13 +101,13 @@
         android:layout_marginTop="42dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:hint="Player 1" />
+        android:hint="@string/player1" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Player 2"
+        android:hint="@string/player2"
         android:ems="10"
         android:id="@+id/player2"
         android:layout_below="@+id/player1"
@@ -124,7 +126,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play"
+        android:text="@string/play"
         android:id="@+id/submit"
         android:layout_below="@+id/player2"
         android:layout_centerHorizontal="true"

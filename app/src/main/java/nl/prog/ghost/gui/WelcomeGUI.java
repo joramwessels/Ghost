@@ -44,7 +44,6 @@ public class WelcomeGUI extends Activity {
         // Collecting saved data
         SharedPreferences save = this.getSharedPreferences("nl.prog.ghost.save", Context.MODE_PRIVATE);
         Set<String> oldPlayers = new HashSet<String>(save.getStringSet("oldPlayers", new HashSet<String>()));
-        String lang = save.getString("lang", "dutch");
 
         updatePlayerNames(oldPlayers);
     }
