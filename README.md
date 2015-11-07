@@ -40,7 +40,7 @@ if(!message.equals("OK")) {
 ~~~
 The *guess()* function checks the input on both syntaxical and game related rules, and changes the game state if everything is valid. If not, it returns a message stating the problem.
 
-Impressions
+Printscreens
 -----------
 ![Welcome.class](welcome_activity.png "The welcome screen")
 ![Game.class](game_activity.png "The actual game")
@@ -48,7 +48,7 @@ Impressions
 
 Discovered bugs
 ----------
-  * layout breaks when keyboard pops up
+  * layout shifts when keyboard pops up
 
 Unfinished backlog
 ----------
